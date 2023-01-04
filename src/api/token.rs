@@ -1,8 +1,12 @@
+#[path = "../middlewares/concatenate.rs"] mod concatenate;
 use reqwest::Client;
-use crate::models::{Tokens, Credentials};
+use crate::models::Credentials;
 
-pub async fn get_token(creds: Credentials, client: Client){
-    let response = client.post("http://127.0.0.1:5000/api/auth")
+
+pub async fn get_token(creds: Credentials, client: Client) -> String {
+    let url = concatenate::concate("/api/login").await;    
+    println!("{}", url);
+    let response = client.post(url)
                                         .json(&creds)
                                         .send()
                                         .await
@@ -10,6 +14,5 @@ pub async fn get_token(creds: Credentials, client: Client){
                                         .text()
                                         .await
                                         .expect("Failed");
-    let tokens: Tokens = serde_json::from_str(&response).unwrap();
-    println!("{} - {}", tokens.token, tokens.refresh_token);
+    return response;
 }
