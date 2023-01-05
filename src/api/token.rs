@@ -3,8 +3,8 @@ use reqwest::Client;
 use crate::models::Credentials;
 
 
-pub async fn get_token(creds: Credentials, client: Client) -> String {
-    let url = concatenate::concate("/api/login").await;    
+pub async fn auth(creds: Credentials, client: Client) -> String {
+    let url = concatenate::concate("/api/auth").await;    
     println!("{}", url);
     let response = client.post(url)
                                         .json(&creds)
@@ -15,4 +15,10 @@ pub async fn get_token(creds: Credentials, client: Client) -> String {
                                         .await
                                         .expect("Failed");
     return response;
+}
+
+pub async fn refresh(refresh_token: String, client: Client) {
+    let url = concatenate::concate("/api/refresh").await;
+    println!("{} - {}", url, refresh_token);
+
 }
